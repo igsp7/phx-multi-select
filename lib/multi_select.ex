@@ -230,7 +230,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
 
   defp get_main_class(selected_count) do
     if(selected_count > 0) do
-      css(:main, true) <> " border-x-2  border-t-2 !border-secondary"
+      css(:main, true) <> " border-2 !border-secondary !p-[7px]"
     else
       css(:main, true)
     end
@@ -238,7 +238,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
 
   defp get_body_class(selected_count) do
     if(selected_count > 0) do
-      css(:body, true) <> " border-x-2 border-b-2 border-secondary"
+      css(:body, true) <> " border-x-2 border-b-2 border-secondary !px-[7px] !pb-[7px]"
     else
       css(:body, true)
     end
@@ -473,7 +473,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
             :updown -> ~S|<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>|
           end)
     ~H"""
-    <svg id={@id} class={@svg_class <> maybe_svg_bold(@selected_count)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+    <svg id={@id} class={maybe_svg_bold(@selected_count, @svg_class)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
       phx-click={@on_click} {@rest}>
       <title :if={@titles || @title}><%= @title %></title>
       <%= raw @path %>
@@ -481,11 +481,11 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
     """
   end
 
-  defp maybe_svg_bold(selected_count) do
+  defp maybe_svg_bold(selected_count, svg_class) do
     if(selected_count > 0) do
-      " !fill-secondary"
+      svg_class <> " !fill-secondary"
     else
-      ""
+      svg_class
     end
   end
 
