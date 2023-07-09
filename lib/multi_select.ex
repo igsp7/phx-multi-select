@@ -230,7 +230,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
 
   defp get_main_class(selected_count) do
     if(selected_count > 0) do
-      css(:main, true) <> " border-2 !border-secondary"
+      css(:main, true) <> " border-x-2  border-t-2 !border-secondary"
     else
       css(:main, true)
     end
