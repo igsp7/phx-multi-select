@@ -265,7 +265,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
           <%!-- <.svg type={:clear} :if={@selected_count > 1}
             title="Clear all selected items" on_click="checked"
             params={[{"uncheck", "all"}, {"id", @id}]} target={@myself}/> --%>
-          <.svg id={@id <> "-updown-icon"} type={:updown} size="6" {@updown_rest}/>
+          <.svg id={@id <> "-updown-icon"} type={:updown} size="6" {@updown_rest} selected_count={@selected_count}/>
         </div>
       </div>
       <div id={"#{@id}-dropdown"} tabindex="0" class={get_body_class(@selected_count)} {@ddown_events}>
