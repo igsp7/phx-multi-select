@@ -228,38 +228,44 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
     end)
   end
 
+      css(:main, true) <> " border-2 !border-secondary"
+    else
+      css(:main, true)
+    end
+  end
+
+  defp get_body_class(selected_count) do
+      css(:body, true) <> " border-x-2 border-b-2 border-secondary"
+    else
+      css(:body, true)
+    end
+  end
+
+  defp get_placeholder_class(selected_count) do
+    if(selected_count > 0) do
+      css(:placeholder) <> " font-bold !opacity-100 font-secondary"
+    else
+      css(:placeholder)
+    end
+  end
+
   @doc false
   def render(assigns) do
     ~H"""
     <div id={@id} style={} class={build_class([@class, css(:component)])} {@top_rest}>
-      <div id={@id <> "-main"} tabindex="0" class={css(:main, true)} title={@title} {@main_rest}>
+      <div id={@id <> "-main"} tabindex="0" class={get_main_class(@selected_count)} title={@title} {@main_rest}>
         <div id={@id <> "-tags"} class={css(:tags)} phx-hook="MultiSelectHook"
              data-target={@myself} data-wrap={Atom.to_string(@wrap)} data-filterside={@filter_side} {@tags_rest}>
-          <%= cond do %>
-            <% @selected_count == 0 -> %>
-              <span class={css(:placeholder)}><%= @placeholder %></span>
-            <% @selected_count > @cur_shown and not @wrap -> %>
-              <span class={css(:tag)}>
-                <span><%= @selected_count %> items selected</span>
-                <.svg type={:close} size="4" color="" on_click="checked" params={[{"uncheck", "all"}, {"id", @id}]} target={@myself}/>
-              </span>
-            <% true -> %>
-              <%= for option <- @checked_options do %>
-                <span id={"#{@id}-tag-#{option.id}"} class={css(:tag) <> " flex-wrap shrink-0"}>
-                  <span><%= option.label %></span>
-                  <.svg type={:close} size="4" color="" on_click="checked" params={[{"uncheck", option.id}, {"id", @id}]} target={@myself}/>
-                </span>
-              <% end %>
-          <% end %>
+             <span class={get_placeholder_class(@selected_count)}><%= @placeholder %></span>
         </div>
         <div class={css(:main_icons)}>
-          <.svg type={:clear} :if={@selected_count > 1}
+          <%!-- <.svg type={:clear} :if={@selected_count > 1}
             title="Clear all selected items" on_click="checked"
-            params={[{"uncheck", "all"}, {"id", @id}]} target={@myself}/>
+            params={[{"uncheck", "all"}, {"id", @id}]} target={@myself}/> --%>
           <.svg id={@id <> "-updown-icon"} type={:updown} size="6" {@updown_rest}/>
         </div>
       </div>
-      <div id={"#{@id}-dropdown"} tabindex="0" class={css(:body, true)} {@ddown_events}>
+      <div id={"#{@id}-dropdown"} tabindex="0" class={get_body_class(@selected_count)} {@ddown_events}>
         <div class="w-full p-0 relative">
           <div class={css(:filter_icons)}>
             <.svg id={"#{@id}-flt-check"} type={:check} titles={@search_cbox_titles} color={css(:icon_check_color)}
@@ -440,6 +446,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
   attr :title,    :string,  default: nil
   attr :titles,   :string,  default: nil
   attr :class,    :string,  default: nil
+  attr :selected_count, :integer, default: 0
 
   defp svg(assigns) do
     size    = assigns[:size]
@@ -463,12 +470,20 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
             :updown -> ~S|<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>|
           end)
     ~H"""
-    <svg id={@id} class={@svg_class} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+    <svg id={@id} class={@svg_class <> maybe_svg_bold(@selected_count)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
       phx-click={@on_click} {@rest}>
       <title :if={@titles || @title}><%= @title %></title>
       <%= raw @path %>
     </svg>
     """
+  end
+
+  defp maybe_svg_bold(selected_count) do
+    if(selected_count > 0) do
+      " !fill-secondary"
+    else
+      ""
+    end
   end
 
   defp color(nil),          do: {nil, nil}
