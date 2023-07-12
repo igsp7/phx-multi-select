@@ -249,7 +249,7 @@ defmodule Phoenix.LiveView.Components.MultiSelect do
 
   defp get_placeholder_class(selected_count) do
     if(selected_count > 0) do
-      css(:placeholder) <> " font-bold !opacity-100 font-secondary"
+      css(:placeholder) <> " font-semibold !opacity-100 font-secondary"
     else
       css(:placeholder)
     end
